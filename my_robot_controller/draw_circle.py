@@ -13,10 +13,9 @@ class DrawCircleNode(Node):
 
     def send_velocity_command(self):
         msg = Twist()
-        msg.linear.x = 3.0
-        msg.angular.z = 0.5
+        msg.linear.x = 10.0
+        msg.angular.z = 4.0
         self.cmd_vel_pub_.publish(msg)
-
 
 
 def main(args=None):
@@ -24,4 +23,14 @@ def main(args=None):
     node = DrawCircleNode()
     rclpy.spin(node)
     rclpy.shutdown()
+
+# not technically required since ros2 run directly calls main from:
+#    entry_points={
+#         'console_scripts': [
+#             "test_node = my_robot_controller.my_first_node:main",
+#             "draw_circle = my_robot_controller.draw_circle:main"
+#         ],
+#     },
+if __name__ == '__main__':
+    main()
 

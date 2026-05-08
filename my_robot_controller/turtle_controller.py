@@ -22,7 +22,7 @@ class TurtleControllerNode(Node):
     def __init__(self):
         super().__init__("turtle_controller")
         self.pose_subscriber_ = self.create_subscription(
-            Pose, "/turtle1/pose", self.control_callback, 10
+            Pose, "/turtle1/pose", self.control_callback_short, 10
         )
         self.cmd_vel_publisher_ = self.create_publisher(
             Twist, "/turtle1/cmd_vel", 10
@@ -36,7 +36,7 @@ class TurtleControllerNode(Node):
         # pos = [pose.x, pose.y]
         if pose.x > bound_max or pose.x < bound_min or pose.y > bound_max or pose.y < bound_min:
             cmd.linear.x = 9.0
-            cmd.angular.z = 15.0
+            cmd.angular.z = 30.0
         else:
             cmd.linear.x = 10.0
             cmd.angular.z = 0.0
@@ -48,27 +48,27 @@ class TurtleControllerNode(Node):
         if pose.x > bound_max:
             cmd.linear.x = 9.0
             if pose.theta >= 0.0:
-                cmd.angular.z = 15.0
+                cmd.angular.z = 30.0
             else:
-                cmd.angular.z = -15.0
+                cmd.angular.z = -30.0
         elif pose.x < bound_min:            
             cmd.linear.x = 9.0
             if pose.theta <= 0.0:
-                cmd.angular.z = 15.0
+                cmd.angular.z = 30.0
             else:
-                cmd.angular.z = -15.0
+                cmd.angular.z = -30.0
         elif pose.y > bound_max:
             cmd.linear.x = 9.0
-            if pose.theta >= pi / 2:
-                cmd.angular.z = 15.0
+            if abs(pose.theta) >= pi / 2:
+                cmd.angular.z = 30.0
             else:
-                cmd.angular.z = -15.0
+                cmd.angular.z = -30.0
         elif pose.y < bound_min:
             cmd.linear.x = 9.0
             if abs(pose.theta) <= pi / 2:
-                cmd.angular.z = 15.0
+                cmd.angular.z = 30.0
             else:
-                cmd.angular.z = -15.0
+                cmd.angular.z = -30.0
         else:
             cmd.linear.x = 10.0
             cmd.angular.z = 0.0

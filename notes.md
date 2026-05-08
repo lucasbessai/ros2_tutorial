@@ -55,7 +55,7 @@
 
 - "self.cmd = self.create_publisher(<pusblish_variable>, <topi>, <q_rate>) in __init__(self):"
 
-  - Q_rate denotes how many times the command is published to ensure that a subscriber actually receives the command from the topic. 
+  - Q size (Q essentailly meaning Queue here) denotes how many times the command is published to ensure that a subscriber actually receives the command from the topic. 
 
 - The topic to publish to can be found from: 
 
@@ -72,10 +72,17 @@
 
 *Subscriber*
 
-- Ros2 topic echo /<topic_name> 
+- ros2 topic echo /<topic_name> 
 
   - Makes a subscriber to the desired topic 
 
+- self.<subscriber method name> = self.create_subscriber() creates a subscriber
+  - a subscriber needs the to know the data type coming in, the exact name of the topic, and the have a callback function of what to do with the data coming from topic
+    - "ros2 topic list" gives a list of the active topics that could be subscribed to. 
+
+*Closed loop control (subscriber and publisher)*
+- In draw_circle node, the publisher is using a timer to publish to the cmd topic. Creating a publisher does not require a callback. In the callback of a timer or subscriber, the publisher can be used to publish to a given topic. When the callback of a subscriber publishes to a topic based on the value of the topic the node is subscribing to, this is feedback control.
+- 
  
 
 **Linux Command Line Tutorial for Robotics, Control, and Machine Learning - Part 1, Aleksandar Haber PhD**

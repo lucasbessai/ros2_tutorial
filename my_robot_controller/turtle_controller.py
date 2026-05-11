@@ -4,6 +4,8 @@ import rclpy
 from rclpy.node import Node
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
+from turtlesim.srv import SetPen
+from functools import partial
 
 # bounds of turtlesim domain
 x_min = 0.0
@@ -30,17 +32,29 @@ class TurtleControllerNode(Node):
         self.get_logger().info(
             "edge avoidance turtle controller has started!"
         )
+        self.x_prev = 0.0
+        self.call_set_pen_service(0, 0, 0, 0, 1)
 
     def control_callback(self, pose: Pose):
         cmd = Twist()
         # pos = [pose.x, pose.y]
         if pose.x > bound_max or pose.x < bound_min or pose.y > bound_max or pose.y < bound_min:
-            cmd.linear.x = 9.0
-            cmd.angular.z = 30.0
+            cmd.linear.x = 2.0
+            cmd.angular.z = 4.0
         else:
             cmd.linear.x = 10.0
             cmd.angular.z = 0.0
         self.cmd_vel_publisher_.publish(cmd)
+
+        if pose.x > x_mid and self.x_prev <= x_mid:
+            self.x_prev = pose.x
+            self.call_set_pen_service(255, 0, 0, 3, 0)
+            self.get_logger().info("Set colour to red")
+
+        if pose.x < x_mid and self.x_prev > x_mid:
+            self.x_prev = pose.x
+            self.call_set_pen_service(0, 255, 0, 3, 0)
+            self.get_logger().info("Set colour to green")
 
     def control_callback_short(self, pose: Pose):
         cmd = Twist()
@@ -73,6 +87,27 @@ class TurtleControllerNode(Node):
             cmd.linear.x = 10.0
             cmd.angular.z = 0.0
         self.cmd_vel_publisher_.publish(cmd)
+
+    def call_set_pen_service(self, r, g, b, width, off):
+        client = self.create_client(SetPen, "/turtle1/set_pen")
+        while not client.wait_for_service(1.0):
+            self.get_logger().info("waiting for service ...")
+        
+        request = SetPen.Request()
+        request.r = r
+        request.g = g
+        request.b = b
+        request.width = width
+        request.off = off
+
+        future = client.call_async(request)
+        future.add_done_callback(partial(self.set_pen_done_callback))
+    
+    def set_pen_done_callback(self, future):
+        try:
+            response = future.result()
+        except Exception as e:
+            self.get_logger().error("Service call failed: %r" % (e,))
 
 def main(args=None): 
     rclpy.init(args=args)

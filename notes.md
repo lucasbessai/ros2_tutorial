@@ -1,5 +1,10 @@
 - Terminator is a graphical user interface (gui) that allows you to split terminal windows easily.  
 
+*Debugging in ros2*
+- ROS2 uses DDS which automatically discovers nodes across the entire local network
+- Default domain ID 0 means everyone on the same WiFi can see and interfere with each other
+- _NODE_NAME_UNKNOWN_ in ros2 topic info --verbose is a reliable indicator that a publisher is coming from another machine
+- Setting a unique ROS_DOMAIN_ID in .bashrc completely isolates your ROS2 environment
  
 
 **ROS2 Humble Crash Course, Robotics Back-End** 
@@ -82,8 +87,12 @@
 
 *Closed loop control (subscriber and publisher)*
 - In draw_circle node, the publisher is using a timer to publish to the cmd topic. Creating a publisher does not require a callback. In the callback of a timer or subscriber, the publisher can be used to publish to a given topic. When the callback of a subscriber publishes to a topic based on the value of the topic the node is subscribing to, this is feedback control.
-- 
- 
+
+*Client/Server*
+- The node/topic framework does not lend itself to a request/answer strucutre of communication. In ros2 this is done through a client and server.
+  - client server interaction is very useful when we want to send some sort of data and expect a response. Used to do computations on information, or change setting of a node. 
+- "ros2 service list" to get a list of available services
+    - services can directly be called and an input of the right request type (often in the form of a dictionary?) can be inputted to get a response. 
 
 **Linux Command Line Tutorial for Robotics, Control, and Machine Learning - Part 1, Aleksandar Haber PhD**
 

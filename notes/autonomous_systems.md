@@ -1,0 +1,3 @@
+**Autonomous Navigation, MathWorks, https://www.mathworks.com/videos/series/autonomous-navigation.html**
+- https://www.mathworks.com/discovery/path-planning.html
+  - *Sampling-based search algorithms*, create a searchable tree by randomly sampling new nodes or robot configurations in a state space. Sampling-based algorithms can be suitable for high-dimensional search spaces such as those used to find a valid set of configurations for a robot arm to pick up an object. Generating dynamically feasible paths for various practical applications make sampling-based planning popular, even though it does not provide a complete solution.

@@ -6,6 +6,22 @@
 - _NODE_NAME_UNKNOWN_ in ros2 topic info --verbose is a reliable indicator that a publisher is coming from another machine
 - Setting a unique ROS_DOMAIN_ID in .bashrc completely isolates your ROS2 environment
  
+*File Organization*
+- It is important to keep a clean repo for isolated projects.
+- colcon builds everything in the src folder.
+```
+~/
+├── ros2_ws/               # tutorial reference
+│   └── src/
+│       └── ros2_tutorial/
+│
+└── robot_ws/              # new project workspace
+    └── src/
+        ├── robot_bringup/       # launch files, top-level config
+        ├── robot_description/   # URDFs, meshes
+        ├── robot_controller/    # your control nodes
+        └── robot_interfaces/    # custom msgs/srvs/actions
+```
 
 **ROS2 Humble Crash Course, Robotics Back-End** 
 

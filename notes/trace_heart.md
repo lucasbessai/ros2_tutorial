@@ -1,0 +1,1 @@
+- https://tutorial.math.lamar.edu/classes/calcii/paratangent.aspx

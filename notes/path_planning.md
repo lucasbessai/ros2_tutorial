@@ -78,3 +78,32 @@
   5. From the joint space realization of the trajectory (ie. q, q_dot, q_ddot of each joint) you then use closed loop feedback control at each joint (with an encoder) to realize the trajectory. The closed loop feedback at each joint ensures that you actually realize the prescribed trajectory. 
 
   6. A more complex control method would involve MIMO control of all the joint states together. This will result in better tracking since each joint’s is coupled with the error of the other joints. A MIMO control matrix effectively communicates error at the joint level to all the joints resulting in a more holistic realization of the goal. (Depending on the use case of the robot, this may not be required.)
+
+Motion Planning with MATLAB, https://www.mathworks.com/campaigns/offers/motion-planning-with-matlab.html
+- 
+*overview*
+- path planning alongside perception (vison) and control systems comprise the three central building blocks for autonomous navigation.
+- **Sampling-based search algorithms**, which create a searchable tree by randomly sampling new nodes or robot configurations in a state space. Sampling-based algorithms can be suitable for high-dimensional search spaces such as those used to find a valid set of configurations for a robot arm to pick up an object. Generating dynamically feasible paths for various practical applications make sampling-based planning popular, even though it does not provide a complete solution.
+
+*Path Planning with A\* and RRT | Autonomous Navigation, Part 4*
+
+- A* is a search base algorithm that searches viable points to travel to next. This is an improvement from just searching all possible paths. It does this by computing the shortest distance to a node from the start and the straight line distance from each explored node to the end. These metrics are used as costs.
+  - compulationally scales exponentially with grid dimension
+- RRT* (randomly exploring random trees) randomly explores the grid and makes branches back to the starting position. The nearest node to each new randomly selected node is computed and path between them is made. For a new random node the path to the nearest node is compared to paths through the neighbourhood of points and shortest path back to the start is taken. 
+
+*Trajectory Planning for Robot Manipulators*
+- A trajectory decribes how to follow a path as a function of time.
+  - A path is often described by a series of position waypoints that are interpolated between depending on the trajectory style chosen.
+- Trajectories can be developed in task space or joints space
+  - Task space will more accurately align with the task (end effector position)
+    - requires more computation
+    - results in more joint accuater effort
+  - Joint space will result in smoother joint movements
+    - more effort to design path
+    - not as accurate task following
+- Waypoint orientations can also be defined. Interpolating between angles is a bit more tricky than positions because they are continuously wrapping or non-unique (Euler angles, gimble-lock)
+  - Quaternions are an unambiguous way of representing orientations. SLERP (spherical linear interpolation) is used in Matlab. It finds the shortest  path between orientations alongs a sphere.  
+- Trapezoidal paths can be restrictive since
+
+**ROS2 Joint Control: Extension Python Scripting, https://docs.isaacsim.omniverse.nvidia.com/5.1.0/ros2_tutorials/tutorial_ros2_manipulation.html**
+-

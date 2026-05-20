@@ -107,3 +107,24 @@ Motion Planning with MATLAB, https://www.mathworks.com/campaigns/offers/motion-p
 
 **ROS2 Joint Control: Extension Python Scripting, https://docs.isaacsim.omniverse.nvidia.com/5.1.0/ros2_tutorials/tutorial_ros2_manipulation.html**
 -
+- "ros2_publisher.py" creates a simpler publisher node that publishes a "JointState" object to the `/joint_command` topic using a timer and timer_callback framework. A "JointState" instance has an instance method for name, position, and other properties. 
+  - Specifically, the program computes a sinusoidal position for each joint every 50ms centered around `default_joints` with $\pm 0.5$ radian amplitude, publishes that as a JointState message with explicit joint names, and `spin()` keeps the timer callback running indefinitely.
+- the default position defined in the code can be returned to by running this command in the terminal:
+```bash
+ros2 topic pub -r 20 /joint_command sensor_msgs/msg/JointState "{
+  header: {stamp: {sec: 0, nanosec: 0}, frame_id: ''},
+  name: ['panda_joint1', 'panda_joint2', 'panda_joint3', 'panda_joint4', 'panda_joint5', 'panda_joint6', 'panda_joint7', 'panda_finger_joint1', 'panda_finger_joint2'],
+  position: [0.0, -1.16, 0.0, -2.3, 0.0, 1.6, 1.1, 0.4, 0.4],
+  velocity: [],
+  effort: []
+}"
+```
+*"-r 20" controls the frequency at which the message is published. 20 corresponds to 20Hz. Just sending a message a single time will not get the arm to move to the right place.
+- There is an script in the online tutorial that recreates the action graph node and connects when run in the script editor window. It simply imports `import omni.graph.core as og` and defines all the nodes and connections between them through code rather than a GUI.
+- "ROS2 Subscribe Joint State" node in the action graph subscribes to a topic you define that is getting a "JointState" type of object. In this case the topic is "/joint_command"
+- The motion is driven by PhysX's internal joint drive, not a trajectory planner. Each joint in the Franka prim has a drive API with stiffness and damping properties (Property -> Physics -> Joint State -> Angular). A PD law is applied to the joints:
+  - `torque = stiffness × (target_position − current_position) − damping × current_velocity`
+  - ROS2 Subscribe Joint State recieves a message -> unpacks position/velocity/effort array and other information (names, etc.) -> passes information to Articulation Controller node -> node calls physics API -> Simulation responds
+
+**Toy Problem:**
+- 

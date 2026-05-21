@@ -125,6 +125,45 @@ ros2 topic pub -r 20 /joint_command sensor_msgs/msg/JointState "{
 - The motion is driven by PhysX's internal joint drive, not a trajectory planner. Each joint in the Franka prim has a drive API with stiffness and damping properties (Property -> Physics -> Joint State -> Angular). A PD law is applied to the joints:
   - `torque = stiffness × (target_position − current_position) − damping × current_velocity`
   - ROS2 Subscribe Joint State recieves a message -> unpacks position/velocity/effort array and other information (names, etc.) -> passes information to Articulation Controller node -> node calls physics API -> Simulation responds
+- An external python file can be used to control the simulated arm through ros2. Making a file executable (chmod +x) is only needed if you want to run it as ./position_velocity_publisher.py directly, which also requires a shebang line at the top:
 
-**Toy Problem:**
+`#!/usr/bin/env python3`
+
+- it can also be run without being an executable with python3 path/to/script.py. Specifcally:
+
+```bash
+python3 ~/IsaacRos2_tutorials/test_ws/scripts/position_velocity_publisher.py
+```
+
+**Toy Problem: motion planning for Franka Panada arm in Issac Sim using ros2**
 - 
+- The .tolist() instance method in Python converts array-like objects—most commonly from the NumPy or Pandas libraries—into native Python lists. It is widely used when you need to serialize data, pass it to standard Python functions, or convert multidimensional arrays into nested lists
+  - in ros2, mostly used when you need to manipulate arrays then publish them to a topic as a python list. 
+
+Build workspace:
+```bash
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+
+cd ~/IsaacRos2_tutorials/test_ws/src
+
+ros2 pkg create panda_motion_planning --build-type ament_python --dependencies rclpy
+
+cd ~/IsaacRos2_tutorials/test_ws
+colcon build --symlink-install
+
+```
+in setup.py
+
+```python
+entry_points={
+    'console_scripts': [
+        'position_pd_controller = panda_controllers.panda_position_pd_controller:main',
+    ],
+},
+```
+to run the node program
+```bash
+source ~/IsaacRos2_tutorials/test_ws/install/setup.bash
+ros2 run panda_controllers position_pd_controller
+```
